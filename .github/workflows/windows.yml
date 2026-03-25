@@ -60,7 +60,7 @@ jobs:
               uses: softprops/action-gh-release@v1
               with:
                files: |
-                 openssl\release.zip
+                 openssl\_dest\Program Files\OpenSSL\bin\*
                name: OpenSSL_With_GostEngine_${{ env.BUILD_DATE }}.zip
                tag_name: ${{ github.run_id }}
                body: |
