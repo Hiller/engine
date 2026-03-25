@@ -52,13 +52,15 @@ jobs:
                   $env:OPENSSL_ENGINES = "$pwd\bin\Debug"
                   $env:OPENSSL_MODULES = "$pwd\bin\Debug"
                   Copy-Item -Path "$pwd\openssl\_dest\Program Files\OpenSSL\bin\*.dll" -Destination "$pwd\bin\Debug"
-                  Compress-Archive "$pwd\openssl\_dest\Program Files\OpenSSL\bin" "$pwd\openssl\release.zip"
                   ctest -C Debug --output-on-failure
+            - name: Compress binaries
+              run: |
+                  Compress-Archive "$pwd\openssl\_dest\Program Files\OpenSSL\bin" "$pwd\openssl\release.zip"
             - name: Upload to Release
               uses: softprops/action-gh-release@v1
               with:
                files: |
-                $pwd\openssl\release.zip
+                 openssl\release.zip
                name: OpenSSL_With_GostEngine_${{ env.BUILD_DATE }}.zip
                tag_name: ${{ github.run_id }}
                body: |
