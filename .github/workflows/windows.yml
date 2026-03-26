@@ -56,7 +56,7 @@ jobs:
             - name: Compress binaries
               run: |
                   mkdir "openssl\release"
-                  robocopy "openssl\_dest\Program Files\OpenSSL\" openssl\release *.dll *.exe *.cnf /S
+                  (robocopy "openssl\_dest\Program Files\OpenSSL\" openssl\release *.dll *.exe *.cnf /S) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
                   if ($lastexitcode -ge 8) { exit 1 }
                   Copy-Item -Path "$pwd\bin\Debug\gost.dll" -Destination "$pwd\openssl\release\lib\engines-3\"
                   Copy-Item -Path "$pwd\bin\Debug\gostprov.dll" -Destination "$pwd\openssl\release\lib\ossl-modules\"
