@@ -57,7 +57,7 @@ jobs:
               run: |
                   mkdir "openssl\release"
                   robocopy "openssl\_dest\Program Files\OpenSSL\" openssl\release *.dll *.exe *.cnf /S
-                  Compress-Archive "$pwd\openssl\release\*" "$pwd\openssl\release.zip"
+                  Compress-Archive "$pwd\openssl\release" "$pwd\openssl\release.zip"
             - name: Upload to Release
               uses: softprops/action-gh-release@v1
               with:
