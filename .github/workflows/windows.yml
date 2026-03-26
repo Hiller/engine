@@ -26,8 +26,8 @@ jobs:
                   git apply patches/openssl-tls1.3.patch
             - uses: ilammy/msvc-dev-cmd@v1
             - name: Build OpenSSL
-              if: steps.cache.outputs.cache-hit != 'true'
               working-directory: openssl
+              if: steps.cache.outputs.cache-hit != 'true'
               run: |
                   perl Configure no-makedepend no-tests no-asm VC-WIN64A
                   perl configdata.pm --dump
@@ -53,3 +53,19 @@ jobs:
                   $env:OPENSSL_MODULES = "$pwd\bin\Debug"
                   Copy-Item -Path "$pwd\openssl\_dest\Program Files\OpenSSL\bin\*.dll" -Destination "$pwd\bin\Debug"
                   ctest -C Debug --output-on-failure
+            - name: Compress binaries
+              run: |
+                  mkdir "openssl\release"
+                  robocopy "openssl\_dest\Program Files\OpenSSL\" openssl\release *.dll *.exe *.cnf /S; if ($lastexitcode -lt 8) { $global:LASTEXITCODE = $null }
+                  dir openssl\release\
+                  Copy-Item -Path "$pwd\bin\Debug\gost.dll" -Destination "$pwd\openssl\release\lib\engines-3\"
+                  Copy-Item -Path "$pwd\bin\Debug\gostprov.dll" -Destination "$pwd\openssl\release\lib\ossl-modules\"
+                  Compress-Archive "$pwd\openssl\release" "$pwd\openssl\release.zip"
+            - name: Upload to Release
+              uses: softprops/action-gh-release@v1
+              with:
+               files: |
+                 openssl/release.zip
+               name: OpenSSL_With_GostEngine_${{ env.BUILD_DATE }}.zip
+               tag_name: ${{ github.run_id }}
+               body: |
