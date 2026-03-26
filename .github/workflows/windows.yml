@@ -26,10 +26,9 @@ jobs:
                   git apply patches/openssl-tls1.3.patch
             - uses: ilammy/msvc-dev-cmd@v1
             - name: Build OpenSSL
-              if: steps.cache.outputs.cache-hit != 'true'
               working-directory: openssl
               run: |
-                  perl Configure no-makedepend no-tests no-asm VC-WIN64A legacy
+                  perl Configure no-makedepend no-tests no-asm VC-WIN64A enable-weak-ssl-ciphers
                   perl configdata.pm --dump
                   nmake /S build_libs build_programs
                   nmake /S install_sw DESTDIR=_dest
