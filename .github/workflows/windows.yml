@@ -55,6 +55,7 @@ jobs:
                   ctest -C Debug --output-on-failure
             - name: Compress binaries
               run: |
+                  mkdir "openssl\release"
                   robocopy "openssl\_dest\Program Files\OpenSSL\" openssl\release *.dll *.exe *.cnf /S
                   Compress-Archive "$pwd\openssl\release\*" "$pwd\openssl\release.zip"
             - name: Upload to Release
